@@ -44,7 +44,7 @@ python3 server.py
 python3 modular_main.py
 ```
 ### 前端界面运行
+```
 python3 server.py
 python3 start_frontend_modular.py
-
 ```
