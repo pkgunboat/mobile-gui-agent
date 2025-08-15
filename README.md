@@ -37,7 +37,8 @@ pip install -r requirements.txt
 3. 在系统设置中将默认输入法切换为 “ADB Keyboard”。
 
 
-
+### 注意事项
+需要先自己创建一个screenshot文件夹
 ### 运行
 ```
 python3 server.py
