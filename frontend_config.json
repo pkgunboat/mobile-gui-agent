@@ -1,0 +1,53 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 50004,
+    "debug": true,
+    "threaded": true
+  },
+  "frontend": {
+    "title": "Mobile Agent 控制界面",
+    "auto_refresh_screenshot": true,
+    "screenshot_refresh_interval": 5000,
+    "auto_scroll_logs": true,
+    "max_log_entries": 1000
+  },
+  "api": {
+    "base_url": "http://localhost:50004",
+    "timeout": 30,
+    "retry_attempts": 3
+  },
+  "ui": {
+    "theme": "light",
+    "language": "zh-CN",
+    "preset_instructions": [
+      {
+        "id": "weather",
+        "name": "查看天气",
+        "description": "打开天气APP，查看北京今日天气，并截图保存",
+        "icon": "fas fa-cloud"
+      },
+      {
+        "id": "wallpaper",
+        "name": "设置壁纸",
+        "description": "打开相册，将最新一张图片设置为壁纸",
+        "icon": "fas fa-image"
+      },
+      {
+        "id": "battery_saver",
+        "name": "开启省电模式",
+        "description": "帮我开启省电模式",
+        "icon": "fas fa-battery-half"
+      }
+    ]
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "file": "frontend.log"
+  },
+  "security": {
+    "cors_enabled": true,
+    "allowed_origins": ["http://localhost:50004", "http://127.0.0.1:50004"]
+  }
+} 

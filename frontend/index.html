@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Agent 控制界面</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .screenshot-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-idle { background-color: #6b7280; }
+        .status-running { background-color: #f59e0b; }
+        .status-success { background-color: #10b981; }
+        .status-error { background-color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 顶部导航栏 -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-robot text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold">Mobile Agent 控制界面</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center">
+                        <span class="status-indicator" id="connectionStatus"></span>
+                        <span id="connectionText">连接状态</span>
+                    </div>
+                    <button id="refreshBtn" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded-lg transition-all">
+                        <i class="fas fa-sync-alt mr-1"></i>刷新
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- 左侧控制面板 -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-lg p-6 sticky top-8">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-terminal mr-2"></i>任务控制
+                    </h2>
+                    
+                    <!-- 指令输入区域 -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            任务指令
+                        </label>
+                        <textarea 
+                            id="taskInput" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            rows="4"
+                            placeholder="请输入要执行的任务指令，例如：帮我开启省电模式"
+                        ></textarea>
+                    </div>
+
+                    <!-- 预设指令 -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            预设指令
+                        </label>
+                        <div class="space-y-2">
+                            <button class="preset-btn w-full text-left px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-sm transition-colors" 
+                                    data-instruction="帮我开启省电模式">
+                                <i class="fas fa-battery-half mr-2"></i>开启省电模式
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 执行控制 -->
+                    <div class="space-y-4">
+                        <button id="executeBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors flex items-center justify-center">
+                            <i class="fas fa-play mr-2"></i>
+                            <span>开始执行</span>
+                        </button>
+                        
+                        <button id="stopBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-md transition-colors flex items-center justify-center hidden">
+                            <i class="fas fa-stop mr-2"></i>
+                            <span>停止执行</span>
+                        </button>
+                        
+                        <button id="clearBtn" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-md transition-colors">
+                            <i class="fas fa-trash mr-2"></i>
+                            <span>清空日志</span>
+                        </button>
+                    </div>
+
+                    <!-- 执行状态 -->
+                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">执行状态</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>当前状态:</span>
+                                <span id="currentStatus" class="font-medium">空闲</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>执行时间:</span>
+                                <span id="executionTime" class="font-medium">0:00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>子任务进度:</span>
+                                <span id="subtaskProgress" class="font-medium">0/0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧内容区域 -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- 实时截图 -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-800">
+                            <i class="fas fa-camera mr-2"></i>实时截图
+                        </h2>
+                        <div class="flex items-center space-x-2">
+                            <button id="refreshScreenshotBtn" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-md text-sm transition-colors">
+                                <i class="fas fa-sync-alt mr-1"></i>刷新
+                            </button>
+                            <span class="text-sm text-gray-500" id="screenshotTime"></span>
+                        </div>
+                    </div>
+                    <div class="screenshot-container">
+                        <img id="currentScreenshot" src="" alt="当前截图" class="w-full rounded-lg shadow-md hidden">
+                        <div id="screenshotPlaceholder" class="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
+                            <div class="text-center text-gray-500">
+                                <i class="fas fa-camera text-4xl mb-2"></i>
+                                <p>暂无截图</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 执行日志 -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-800">
+                            <i class="fas fa-list-alt mr-2"></i>执行日志
+                        </h2>
+                        <div class="flex items-center space-x-2">
+                            <button id="autoScrollBtn" class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1 rounded-md text-sm transition-colors">
+                                <i class="fas fa-arrow-down mr-1"></i>自动滚动
+                            </button>
+                            <span class="text-sm text-gray-500" id="logCount">0 条日志</span>
+                        </div>
+                    </div>
+                    <div id="logContainer" class="bg-gray-50 rounded-lg p-4 h-96 overflow-y-auto font-mono text-sm">
+                        <div class="text-gray-500 text-center py-8">
+                            <i class="fas fa-terminal text-2xl mb-2"></i>
+                            <p>等待任务执行...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 任务统计 -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-chart-bar mr-2"></i>任务统计
+                    </h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <div class="text-2xl font-bold text-blue-600" id="totalActions">0</div>
+                            <div class="text-sm text-gray-600">总动作数</div>
+                        </div>
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <div class="text-2xl font-bold text-green-600" id="successfulActions">0</div>
+                            <div class="text-sm text-gray-600">成功动作</div>
+                        </div>
+                        <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                            <div class="text-2xl font-bold text-yellow-600" id="modelCalls">0</div>
+                            <div class="text-sm text-gray-600">模型调用</div>
+                        </div>
+                        <div class="text-center p-4 bg-purple-50 rounded-lg">
+                            <div class="text-2xl font-bold text-purple-600" id="screenshots">0</div>
+                            <div class="text-sm text-gray-600">截图数量</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载遮罩 -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-lg font-medium text-gray-700">正在执行任务...</p>
+            <p class="text-sm text-gray-500 mt-2" id="loadingMessage">请稍候</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
