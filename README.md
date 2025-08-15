@@ -2,10 +2,7 @@
 ## 基于多智能体架构的通用AI助手
 
 <sup>1</sup>北京邮电大学    <sup>2</sup>北京理工大学
-</div>
-<div align="center">
-<sup>†</sup>通讯作者
-</div>
+
 
 <div align="center">
 <a href="README_zh.md">简体中文</a> | <a href="README.md">English</a>
