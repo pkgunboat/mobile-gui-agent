@@ -1,24 +1,7 @@
 ![](assets/logo.png?v=1&type=image)
 ## 基于多智能体架构的通用AI助手
-<div align="center">
-	<a href="https://huggingface.co/spaces/junyangwang0410/Mobile-Agent"><img src="https://huggingface.co/datasets/huggingface/badges/raw/main/open-in-hf-spaces-sm-dark.svg" alt="Open in Spaces"></a>
-	<a href="https://modelscope.cn/studios/wangjunyang/Mobile-Agent-v2"><img src="assets/Demo-ModelScope-brightgreen.svg" alt="Demo ModelScope"></a>
-  <a href="https://arxiv.org/abs/2406.01014 "><img src="https://img.shields.io/badge/Arxiv-2406.01014-b31b1b.svg?logo=arXiv" alt=""></a>
-  <a href="https://huggingface.co/papers/2406.01014"><img src="https://img.shields.io/badge/🤗-Paper%20In%20HF-red.svg" alt=""></a>
-</div>
-<br>
-<div align="center">
-Junyang Wang<sup>1</sup>, Haiyang Xu<sup>2†</sup>,Haitao Jia<sup>1</sup>, Xi Zhang,<sup>2</sup>
-</div>
-<div align="center">
-Ming Yan<sup>2†</sup>, Weizhou Shen<sup>2</sup>, Ji Zhang<sup>2</sup>, Fei Huang<sup>2</sup>, Jitao Sang<sup>1†</sup>
-</div>
-<div align="center">
-{junyangwang, jtsang}@bjtu.edu.cn, {shuofeng.xhy, ym119608}@alibaba-inc.com
-</div>
-<br>
-<div align="center">
-<sup>1</sup>北京交通大学    <sup>2</sup>阿里巴巴集团
+
+<sup>1</sup>北京邮电大学    <sup>2</sup>北京理工大学
 </div>
 <div align="center">
 <sup>†</sup>通讯作者
@@ -32,13 +15,6 @@ Ming Yan<sup>2†</sup>, Weizhou Shen<sup>2</sup>, Ji Zhang<sup>2</sup>, Fei Hua
 简体中文 | [English](README.md)
 <hr>
 -->
-
-## 📋介绍
-
-![](assets/role.jpg?v=1&type=image)
-* 一个用于解决在长上下文图文交错输入中导航的多智能体架构。
-* 增强的视觉感知模块，用于提升操作准确率。
-* 凭借GPT-4o进一步提升操作性能和速度。
 
 ## 🔧开始
 
