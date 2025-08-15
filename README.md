@@ -36,37 +36,15 @@ pip install -r requirements.txt
 2. 在设备上点击该 apk 来安装。
 3. 在系统设置中将默认输入法切换为 “ADB Keyboard”。
 
-### 选择适合的运行方式
 
-1. 在 ```run.py``` 的22行起编辑你的设置， 并且输入你的 ADB 路径，指令，GPT-4 API URL 和 Token。
-
-2.选择适合你的设备的图标描述模型的调用方法：
-  - 如果您的设备配备了高性能GPU，我们建议使用“local”方法。它是指在本地设备中部署图标描述模型。如果您的设备足够强大，则通常具有更好的效率。
-  - 如果您的设备不足以运行7B 大小的 LLM，请选择“api”方法。我们使用并行调用来确保效率。
-
-3.选择图标描述模型：
-  - 如果选择“local”方法，则需要在“qwen-vl-chat”和“qwen-vl-chat-int4”之间进行选择，其中“qwen-vl-chat”需要更多的GPU内存，但提供了更好的性能与“qwen-vl-chat-int4”相比。同时，“qwen_api”可以是空置的。
-  - 如果您选择“api”方法，则需要在“qwen-vl-plus”和“qwen-vl-max”之间进行选择，其中“qwen-vl-max”需要更多的费用，但与“qwen-vl-plus”相比提供了更好的性能。此外，您还需要申请[Qwen-VL 的 API-KEY](https://help.aliyun.com/document_detail/2712195.html?spm=a2c4g.2712569.0.0.5d9e730aymB3jH)，并将其输入到“qwen_api”。
-
-4.您可以在“add_info”中添加操作知识（例如，完成您需要的指令所需的特定步骤），以帮助更准确地运行移动设备。
-
-5.如果您想进一步提高移动设备的效率，则可以将“ reflection_Switch”和“ memory_switch”设置为“ False”。
-  - “ reflection_switch”用于确定是否在此过程中添加“反思智能体”。这可能会导致操作陷入死周期。但是您可以将操作知识添加到“ add_info”中以避免它。
-  - “ memory_switch”用于决定是否将“内存单元”添加到该过程中。如果你的指令中不需要在后续操作中使用之前屏幕中的信息，则可以将其关闭。
 
 ### 运行
 ```
-python run.py
+python3 server.py
+python3 modular_main.py
 ```
+### 前端界面运行
+python3 server.py
+python3 start_frontend_modular.py
 
-## 📑引用
-
-如果您发现Mobile-Agent-v2对研究和应用程序有用，请使用此Bibtex引用：
-```
-@article{wang2024mobile2,
-  title={Mobile-Agent-v2: Mobile Device Operation Assistant with Effective Navigation via Multi-Agent Collaboration},
-  author={Wang, Junyang and Xu, Haiyang and Jia, Haitao and Zhang, Xi and Yan, Ming and Shen, Weizhou and Zhang, Ji and Huang, Fei and Sang, Jitao},
-  journal={arXiv preprint arXiv:2406.01014},
-  year={2024}
-}
 ```
