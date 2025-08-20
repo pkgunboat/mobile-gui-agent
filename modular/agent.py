@@ -47,12 +47,12 @@ class MobileAgent:
         ui_tars_action_count = 0  # 记录ui-tars-agent执行的动作数量
         
         action_history = []  # 记录执行历史
-
+        operate_model_type = "simple"
         for rounds in range(max_rounds):
             if rounds <= 5:
-                model_type = "simple"
+                operate_model_type = "simple"
             else:
-                model_type = "sync"
+                operate_model_type = "plan"
             print(f"\n=== Round {rounds + 1}/{max_rounds} ===")
             # 1. 获取截图及尺寸
             screenshot_path, origin_w, origin_h = self.action_executor.screenshot(
@@ -99,7 +99,7 @@ class MobileAgent:
             # 3. 调用模型获取动作
             try:
                 start_time = time.time()
-                model_output = self.model_manager.call_main_model(messages, temperature=0.0, model_type=model_type)
+                model_output = self.model_manager.call_main_model(messages, temperature=0.0, model_type=operate_model_type)
                 execution_time = time.time() - start_time
                 print(f"Model Output:\n{model_output}")
                 
