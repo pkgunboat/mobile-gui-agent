@@ -52,7 +52,7 @@ class MobileAgent:
             if rounds <= 5:
                 operate_model_type = "simple"
             else:
-                operate_model_type = "plan"
+                operate_model_type = "sync"
             print(f"\n=== Round {rounds + 1}/{max_rounds} ===")
             # 1. 获取截图及尺寸
             screenshot_path, origin_w, origin_h = self.action_executor.screenshot(
